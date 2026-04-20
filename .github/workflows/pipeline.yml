@@ -1,35 +1,49 @@
 name: Desafio de Variáveis e Escopos
+
 on:
   workflow_dispatch:
+
 env:
   APP_NAME: MeuApp
+
 jobs:
   build_app:
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
     env:
       BUILD_VERSION: v1.0.0
+
     steps:
-      - name: Passo 1
-        run: echo App (global): %APP_NAME% && echo Build version: %BUILD_VERSION%
-        shell: cmd
-      - name: Passo 2
-        run: set STEP_TEMP=valor_temporario && echo STEP_TEMP dentro: %STEP_TEMP%
-        shell: cmd
-      - name: Passo 2b
-        run: echo STEP_TEMP fora: %STEP_TEMP%
-        shell: cmd
-      - name: Passo 3
-        run: echo O usuario %GITHUB_ACTOR% disparou no repositorio %GITHUB_REPOSITORY% no SO %RUNNER_OS%
-        shell: cmd
-      - name: Passo 4
-        run: set RANDOM_NUM=%RANDOM% && echo BUILD_HASH=%RANDOM_NUM%>>%GITHUB_ENV%
-        shell: cmd
-      - name: Passo 5
-        run: echo O hash gerado foi: %BUILD_HASH%
-        shell: cmd
+      - name: Passo 1 - Variaveis em Escopos Diferentes
+        run: |
+          echo "App (global): $APP_NAME"
+          echo "Build version (job): $BUILD_VERSION"
+
+      - name: Passo 2 - STEP_TEMP dentro do step
+        run: |
+          STEP_TEMP="valor_temporario"
+          echo "STEP_TEMP dentro do step: $STEP_TEMP"
+
+      - name: Passo 2b - STEP_TEMP fora do step original
+        run: |
+          echo "STEP_TEMP aqui: $STEP_TEMP"
+
+      - name: Passo 3 - Auditoria com Variaveis Padrao
+        run: |
+          echo "O usuario $GITHUB_ACTOR disparou este workflow no repositorio $GITHUB_REPOSITORY. O sistema operacional do runner e $RUNNER_OS."
+
+      - name: Passo 4 - Gerar Codigo Dinamico
+        run: |
+          RANDOM_NUM=$RANDOM
+          echo "BUILD_HASH=$RANDOM_NUM" >> $GITHUB_ENV
+
+      - name: Passo 5 - Usar Codigo Dinamico
+        run: |
+          echo "O hash gerado para este build foi: $BUILD_HASH"
+
   deploy_app:
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
     steps:
-      - name: Passo 6
-        run: echo URL_AMBIENTE: ${{ vars.URL_AMBIENTE }} && echo API_TOKEN_PROD: ${{ secrets.API_TOKEN_PROD }}
-        shell: cmd
+      - name: Passo 6 - Acessando Secrets e Vars
+        run: |
+          echo "URL_AMBIENTE: ${{ vars.URL_AMBIENTE }}"
+          echo "API_TOKEN_PROD: ${{ secrets.API_TOKEN_PROD }}"

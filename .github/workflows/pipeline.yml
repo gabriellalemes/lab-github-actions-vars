@@ -15,42 +15,42 @@ jobs:
     steps:
       - name: Passo 1: Variáveis em Escopos Diferentes
         run: |
-          echo App (global): ${{ env.APP_NAME }}
-          echo Build version (job): ${{ env.BUILD_VERSION }}
-        shell: cmd
+          Write-Host "App (global): $env:APP_NAME"
+          Write-Host "Build version (job): $env:BUILD_VERSION"
+        shell: pwsh
 
       - name: Passo 2: Observando o Escopo da STEP_TEMP
         run: |
-          set STEP_TEMP=valor_temporario
-          echo STEP_TEMP dentro do step: %STEP_TEMP%
-        shell: cmd
+          $env:STEP_TEMP = "valor_temporario"
+          Write-Host "STEP_TEMP dentro do step: $env:STEP_TEMP"
+        shell: pwsh
 
       - name: Passo 2b - STEP_TEMP fora do step original
         run: |
-          echo STEP_TEMP aqui: %STEP_TEMP%
-        shell: cmd
+          Write-Host "STEP_TEMP aqui: $env:STEP_TEMP"
+        shell: pwsh
 
       - name: Passo 3: Auditoria com Variáveis Padrão
         run: |
-          echo O usuário ${{ github.actor }} disparou este workflow no repositório ${{ github.repository }}. O sistema operacional do runner é ${{ runner.os }}.
-        shell: cmd
+          Write-Host "O usuário ${{ github.actor }} disparou este workflow no repositório ${{ github.repository }}. O sistema operacional do runner é ${{ runner.os }}."
+        shell: pwsh
 
       - name: Passo 4: Gerar Código Dinâmico
         run: |
-          set RANDOM_NUM=%RANDOM%
-          echo BUILD_HASH=%RANDOM_NUM%>> %GITHUB_ENV%
-        shell: cmd
+          $RANDOM_NUM = Get-Random -Maximum 32768
+          "BUILD_HASH=$RANDOM_NUM" | Out-File -FilePath $env:GITHUB_ENV -Append
+        shell: pwsh
 
       - name: Passo 5: Usar Código Dinâmico
         run: |
-          echo O hash gerado para este build foi: ${{ env.BUILD_HASH }}
-        shell: cmd
+          Write-Host "O hash gerado para este build foi: $env:BUILD_HASH"
+        shell: pwsh
 
   deploy_app:
     runs-on: windows-latest
     steps:
       - name: Passo 6: Acessando Secrets e Vars
         run: |
-          echo URL_AMBIENTE: ${{ vars.URL_AMBIENTE }}
-          echo API_TOKEN_PROD: ${{ secrets.API_TOKEN_PROD }}
-        shell: cmd
+          Write-Host "URL_AMBIENTE: ${{ vars.URL_AMBIENTE }}"
+          Write-Host "API_TOKEN_PROD: ${{ secrets.API_TOKEN_PROD }}"
+        shell: pwsh

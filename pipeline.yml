@@ -1,0 +1,46 @@
+name: Desafio de Variáveis e Escopos
+
+on: workflow_dispatch
+
+env:
+  APP_NAME: MeuApp
+
+jobs:
+  build_app:
+    runs-on: windows-latest
+    env:
+      BUILD_VERSION: v1.0.0
+    steps:
+      - name: Passo 1
+        run: |
+          echo App (global): %APP_NAME%
+          echo Build version: %BUILD_VERSION%
+        shell: cmd
+      - name: Passo 2
+        run: |
+          set STEP_TEMP=valor_temporario
+          echo STEP_TEMP dentro: %STEP_TEMP%
+        shell: cmd
+      - name: Passo 2b
+        run: echo STEP_TEMP fora: %STEP_TEMP%
+        shell: cmd
+      - name: Passo 3
+        run: echo O usuario %GITHUB_ACTOR% disparou no repositorio %GITHUB_REPOSITORY% no SO %RUNNER_OS%
+        shell: cmd
+      - name: Passo 4
+        run: |
+          set RANDOM_NUM=%RANDOM%
+          echo BUILD_HASH=%RANDOM_NUM%>> %GITHUB_ENV%
+        shell: cmd
+      - name: Passo 5
+        run: echo O hash gerado foi: %BUILD_HASH%
+        shell: cmd
+
+  deploy_app:
+    runs-on: windows-latest
+    steps:
+      - name: Passo 6
+        run: |
+          echo URL_AMBIENTE: %URL_AMBIENTE%
+          echo API_TOKEN_PROD: %API_TOKEN_PROD%
+        shell: cmd

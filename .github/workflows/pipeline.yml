@@ -13,34 +13,34 @@ jobs:
     steps:
       - name: Passo 1
         run: |
-          echo "App (global): $env:APP_NAME"
-          echo "Build version: $env:BUILD_VERSION"
-        shell: pwsh
+          echo App (global): %APP_NAME%
+          echo Build version: %BUILD_VERSION%
+        shell: cmd
       - name: Passo 2
         run: |
-          $env:STEP_TEMP = "valor_temporario"
-          echo "STEP_TEMP dentro: $env:STEP_TEMP"
-        shell: pwsh
+          set STEP_TEMP=valor_temporario
+          echo STEP_TEMP dentro: %STEP_TEMP%
+        shell: cmd
       - name: Passo 2b
-        run: echo "STEP_TEMP fora: $env:STEP_TEMP"
-        shell: pwsh
+        run: echo STEP_TEMP fora: %STEP_TEMP%
+        shell: cmd
       - name: Passo 3
-        run: echo "Usuario: ${{ github.actor }} | Repo: ${{ github.repository }} | SO: ${{ runner.os }}"
-        shell: pwsh
+        run: echo O usuario %GITHUB_ACTOR% disparou no repositorio %GITHUB_REPOSITORY% no SO %RUNNER_OS%
+        shell: cmd
       - name: Passo 4
         run: |
-          $RANDOM_NUM = Get-Random -Maximum 32768
-          "BUILD_HASH=$RANDOM_NUM" | Out-File -FilePath $env:GITHUB_ENV -Append
-        shell: pwsh
+          set RANDOM_NUM=%RANDOM%
+          echo BUILD_HASH=%RANDOM_NUM%>> %GITHUB_ENV%
+        shell: cmd
       - name: Passo 5
-        run: echo "Hash gerado: $env:BUILD_HASH"
-        shell: pwsh
+        run: echo O hash gerado foi: %BUILD_HASH%
+        shell: cmd
 
   deploy_app:
     runs-on: windows-latest
     steps:
       - name: Passo 6
         run: |
-          echo "URL: ${{ vars.URL_AMBIENTE }}"
-          echo "TOKEN: ${{ secrets.API_TOKEN_PROD }}"
-        shell: pwsh
+          echo URL_AMBIENTE: %URL_AMBIENTE%
+          echo API_TOKEN_PROD: %API_TOKEN_PROD%
+        shell: cmd
